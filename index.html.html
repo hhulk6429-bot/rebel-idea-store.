@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>متجر الفكرة المتمردة | Rebel Idea Store</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #0f0f0f; color: #fff; }
+  header { background: #1a1a1a; padding: 20px; text-align: center; }
+  header h1 { margin: 0; font-size: 2em; color: #f39c12; }
+  nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin: 10px 0; }
+  nav button { padding: 10px 15px; background: #333; border: none; color: #fff; cursor: pointer; border-radius: 5px; }
+  nav button.active { background: #f39c12; color: #000; }
+  .container { display: flex; flex-wrap: wrap; justify-content: center; padding: 20px; gap: 20px; }
+  .card { background: #1a1a1a; padding: 15px; border-radius: 10px; width: 300px; box-shadow: 0 0 10px #f39c12; display: flex; flex-direction: column; justify-content: space-between; }
+  .card h3 { margin-top: 0; color: #f39c12; }
+  .card p { font-size: 0.9em; line-height: 1.4em; }
+  .card button { margin-top: 10px; padding: 8px 12px; background: #f39c12; border: none; cursor: pointer; border-radius: 5px; color: #000; }
+  footer { text-align: center; padding: 15px; background: #1a1a1a; margin-top: 20px; font-size: 0.9em; color: #aaa; }
+  .price { font-weight: bold; margin-top: 5px; color: #00ff99; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>متجر الفكرة المتمردة | Rebel Idea Store</h1>
+  <nav>
+    <button class="active" onclick="filterCategory('all')">الكل | All</button>
+    <button onclick="filterCategory('creative')">إبداعي | Creative</button>
+    <button onclick="filterCategory('coding')">برمجة | Coding</button>
+    <button onclick="filterCategory('marketing')">تسويق | Marketing</button>
+    <button onclick="filterCategory('data')">بيانات | Data</button>
+    <button onclick="filterCategory('interactive')">تفاعلي | Interactive</button>
+    <button onclick="filterCategory('business')">أعمال | Business</button>
+  </nav>
+</header>
+
+<div class="container" id="promptsContainer">
+  <!-- برمبتات ستتم إضافتها تلقائيًا -->
+</div>
+
+<footer>
+  © 2025 متجر الفكرة المتمردة | Rebel Idea Store. جميع الحقوق محفوظة.
+</footer>
+
+<script>
+  // === بيانات البرمبتات مع السعر ودرجة الربحية ===
+  const prompts = [
+    { category:'creative', name_ar:'مصمم الأفكار العبقرية', name_en:'Genius Idea Generator', desc_ar:'إنشاء أفكار مبتكرة لمشاريع، منتجات، محتوى، وحلول غير تقليدية.', desc_en:'Generate innovative ideas for projects, products, content, and unconventional solutions.', price: 15, demand: 95 },
+    { category:'coding', name_ar:'كود ذكي متكيف', name_en:'Adaptive Code Generator', desc_ar:'كتابة أكواد Python، JS، وHTML ذكية، قابلة للتعديل التلقائي حسب المشروع.', desc_en:'Write smart Python, JS, and HTML codes, adaptable automatically per project.', price: 20, demand: 90 },
+    { category:'marketing', name_ar:'كاتب التسويق الذكي', name_en:'Smart Marketing Writer', desc_ar:'إنشاء محتوى تسويقي إبداعي، منشورات، إعلانات، ونصوص جذابة.', desc_en:'Create creative marketing content, posts, ads, and engaging texts.', price: 18, demand: 92 },
+    { category:'data', name_ar:'محلل القرار الذكي', name_en:'Smart Decision Analyst', desc_ar:'تحليل البيانات وتقديم توصيات دقيقة لتحسين الأعمال.', desc_en:'Analyze data and provide precise recommendations to improve business.', price: 22, demand: 88 },
+    { category:'interactive', name_ar:'الشخصية الذكية التفاعلية', name_en:'Interactive AI Character', desc_ar:'إنشاء شخصيات AI تفاعلية للمحادثات والألعاب والتجارب الافتراضية.', desc_en:'Create interactive AI characters for chats, games, and virtual experiences.', price: 25, demand: 85 },
+    { category:'business', name_ar:'مسرّع الأعمال الذكي', name_en:'Smart Business Accelerator', desc_ar:'أتمتة الأعمال، تحسين العمليات، وتسريع نمو المشاريع.', desc_en:'Automate business, optimize operations, and accelerate project growth.', price: 30, demand: 80 },
+  ];
+
+  const container = document.getElementById('promptsContainer');
+
+  function displayPrompts(list) {
+    container.innerHTML = '';
+    // ترتيب حسب الطلب الأعلى أولًا
+    list.sort((a,b) => b.demand - a.demand);
+    list.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <h3>${p.name_ar} | ${p.name_en}</h3>
+        <p>${p.desc_ar}<br>${p.desc_en}</p>
+        <div class="price">$${p.price} | السعر</div>
+        <button onclick="buyPrompt('${p.name_en}')">اشتري البرمبت | Buy Prompt</button>
+        <button onclick="copyPrompt('${p.name_en}')">نسخ البرمبت | Copy Prompt</button>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  function filterCategory(category) {
+    const buttons = document.querySelectorAll('nav button');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    if(category==='all') { displayPrompts(prompts); }
+    else { displayPrompts(prompts.filter(p=>p.category===category)); }
+  }
+
+  function copyPrompt(name) {
+    const prompt = prompts.find(p=>p.name_en===name);
+    const text = `${prompt.name_ar} | ${prompt.name_en}\n${prompt.desc_ar}\n${prompt.desc_en}`;
+    navigator.clipboard.writeText(text).then(()=>alert('تم نسخ البرمبت! | Prompt copied!'));
+  }
+
+  function buyPrompt(name) {
+    const prompt = prompts.find(p=>p.name_en===name);
+    alert(`تم شراء ${prompt.name_ar} مقابل $${prompt.price}! | Purchased for $${prompt.price}`);
+    // هنا يمكن ربط API الدفع لاحقًا
+  }
+
+  displayPrompts(prompts);
+
+  async function updatePrompts() {
+    try {
+      const newPrompts = []; // يمكن ربط API خارجي هنا
+      if(newPrompts.length>0){ prompts.push(...newPrompts); displayPrompts(prompts); }
+    } catch(e) { console.error('خطأ في تحديث البرمبتات | Update failed:', e); }
+  }
+
+  setInterval(updatePrompts, 24*60*60*1000);
+
+</script>
+
+</body>
+</html>
